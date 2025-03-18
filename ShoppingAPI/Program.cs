@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Shopping.API.Security;
 using Shopping.DAL;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +13,13 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ShoppingContext>(
     o => o.UseSqlServer(builder.Configuration.GetConnectionString("Default"))
     );
+
+// ajout de notre générateur de JWT
+TokenManager.Config config = builder.Configuration.GetSection("Jwt").Get<TokenManager.Config>() ?? throw new Exception("Missing Jwt config.");
+
+builder.Services.AddSingleton<ITokenManager, TokenManager>(
+    _ => new TokenManager(config)
+ );
 
 // CORS : Cross-Origin Resource Sharing
 // partage de ressource inter-domaine
