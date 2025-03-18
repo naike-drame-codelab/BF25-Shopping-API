@@ -12,7 +12,6 @@ namespace Shopping.DAL.Entities
         public string Username { get; set; } = null!;
         public string Password { get; set; } = null!;
         public Guid Salt { get; set; }
-
         public string Role { get; set; } = null!;
     }
 }
