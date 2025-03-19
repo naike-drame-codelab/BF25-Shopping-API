@@ -18,6 +18,7 @@ namespace Shopping.API.Security
         }
         #endregion
 
+        #region Créer un token à la connexion
         public string CreateToken(int id, string email, string role)
         {
             JwtSecurityTokenHandler handler = new();
@@ -38,7 +39,7 @@ namespace Shopping.API.Security
                     SecurityAlgorithms.HmacSha256
                 ));
             return handler.WriteToken(token);
-        }
+        } 
 
         // un IEnumerable est une collection d'éléments qui peut être parcourue par une boucle foreach
         // on peut retourner un tableau, une liste, un dictionnaire, etc.
@@ -59,9 +60,10 @@ namespace Shopping.API.Security
             //]; 
             #endregion
         }
+        #endregion
 
         #region Rafrîchir un token
-        public object ValidateTokenWithoutLifeTime(string token)
+        public int ValidateTokenWithoutLifeTime(string token)
         {
             JwtSecurityTokenHandler handler = new();
             TokenValidationParameters validationParameters = new()
