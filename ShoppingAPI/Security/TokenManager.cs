@@ -59,5 +59,25 @@ namespace Shopping.API.Security
             //]; 
             #endregion
         }
+
+        #region Rafrîchir un token
+        public object ValidateTokenWithoutLifeTime(string token)
+        {
+            JwtSecurityTokenHandler handler = new();
+            TokenValidationParameters validationParameters = new()
+            {
+                ValidateIssuer = true,
+                ValidIssuer = config.Issuer,
+                ValidateAudience = true,
+                ValidAudience = config.Audience,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.Secret)),
+                // !!!! pas besoin de valider puisque le token a expiré
+                ValidateLifetime = false
+            };
+
+            var claims = handler.ValidateToken(token, validationParameters, out SecurityToken s);
+            return int.Parse(claims?.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "-1");
+        } 
+        #endregion
     }
 }

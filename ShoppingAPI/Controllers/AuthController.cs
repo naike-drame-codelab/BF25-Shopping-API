@@ -30,19 +30,45 @@ namespace Shopping.API.Controllers
 
             // si l'utilisateur est trouvé
             // vérifier si le mot de passe est correct
-                // si le mot de passe n'est pas correct
-            if (Encoding.UTF8.GetString(SHA512.HashData(Encoding.UTF8.GetBytes(dto.Password + user.Salt))) != user.Password) {
-                  // 400 // 401
-                    return BadRequest();
-                }
-            
+            // si le mot de passe n'est pas correct
+            if (Encoding.UTF8.GetString(SHA512.HashData(Encoding.UTF8.GetBytes(dto.Password + user.Salt))) != user.Password)
+            {
+                // 400 // 401
+                return BadRequest();
+            }
+
             // si le mot de passe est correct
-                // générer et retourner un token
+            // générer et retourner un token
             return Ok(new
-                {
-                    Token = tokenManager.CreateToken(user.Id, user.Email, user.Role)
-                }
+            {
+                Token = tokenManager.CreateToken(user.Id, user.Email, user.Role)
+            }
             );
+        }
+
+        [HttpGet]
+        public IActionResult RefreshToken([FromQuery] string token)
+        {
+            try
+            {
+                int id = tokenManager.ValidateTokenWithoutLifeTime(token);
+                //vérifier le user existe pour pouvoir passer ses données dans le nouveau token de rafraîchissement
+                User? user = ctx.Users.Find(id);
+                if (user is null)
+                {
+                    return Unauthorized();
+                }
+                string newToken = tokenManager.CreateToken(user.Id, user.Email, user.Role);
+                return Ok(new
+                {
+                    Token = newToken
+                });
+            }
+            catch (Exception)
+            {
+                return Unauthorized();
+            }
+
         }
     }
 }
