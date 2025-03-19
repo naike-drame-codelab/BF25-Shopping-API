@@ -46,7 +46,7 @@ namespace Shopping.API.Controllers
             );
         }
 
-        [HttpGet]
+        [HttpGet("refreshToken")]
         public IActionResult RefreshToken([FromQuery] string token)
         {
             try
